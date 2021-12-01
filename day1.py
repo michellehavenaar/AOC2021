@@ -30,3 +30,7 @@ def depthCounterAdvanced(data):
     return count-1
 
 print(depthCounterAdvanced(data))
+
+#alternative solution for part 2
+sums = [(data[i] + data[i+1] + data[i+2]) for i in range(0, len(data)) if i < (len(data) -2)]
+print(depthCounter(sums))
