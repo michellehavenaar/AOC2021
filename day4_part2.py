@@ -41,7 +41,6 @@ def checkCol(board, num):
 #puzzle 2, move all winningboards to a new list and remove from original, when all numbers have been called check the last winningboard
 print("starting bingo game 2")
 winningBoards = []
-losingBoard = None
 winningBoard = None
 winningNum = None
 for i in input:
