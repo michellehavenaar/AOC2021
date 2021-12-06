@@ -1,19 +1,14 @@
 from collections import Counter
 
-with open("input/i_day6test.txt") as f:
+with open("input/i_day6.txt") as f:
     data = f.read()
 
 data = data.split(",")
 fish = [int(d) for d in data]
 
-print(fish)
 
 #counter
 startPop = Counter(fish)
-print(startPop)
-
-# for s, count in startPop.items():
-#     print(s, count)
 
 class Fishpopulation:
     def __init__(self, count):
@@ -34,38 +29,53 @@ class Fishpopulation:
             
 
 startCount = sum(startPop.values())
-print(startCount)
 
 fishPop = Fishpopulation(startCount)
 
+Fishpopulation.createDays(fishPop,startPop)
+
+for i in range(0,256):
+    currentDay = i
+
+    #find day
+    for day in fishPop.days:
+        if day["dayNumber"] == currentDay:
+            #first update count
+            Fishpopulation.updateCount(fishPop,day["newFish"])
+
+            #a new fish has been born, update the days or create a new day
+            addFish = day["newFish"]
+            targetDay = i + 9
+            dayFound = False
+            for day in fishPop.days:
+                if day["dayNumber"] == targetDay:
+                    dayFound = True
+                    day["newFish"] += addFish
+            if dayFound == False:
+                newDay = {
+                    "dayNumber" : targetDay,
+                    "newFish" : addFish
+                }
+                fishPop.days.append(newDay)
+
+            #reset the fish
+            targetDay = i + 7
+            dayFound = False
+            for day in fishPop.days:
+                if day["dayNumber"] == targetDay:
+                    dayFound = True
+                    day["newFish"] += addFish
+            if dayFound == False:
+                newDay = {
+                    "dayNumber" : targetDay,
+                    "newFish" : addFish
+                }
+                fishPop.days.append(newDay)
+
 print(fishPop.count)
 
-Fishpopulation.createDays(fishPop,startPop)
-print(fishPop.days)
-
-# for day in fishPop.days:
-#     print(day["dayNumber"])
-
-#start at day 0
-#find the day this tells you how many fishes are being added that day
 
 
-
-
-
-# dayFound = findDayByNumber(1, fishPop.days)
-# if len(dayFound) == 0:
-#     print("do nothing")
-# if len(dayFound) > 0:
-#     print(dayFound)
-#     print(dayFound)
-# #     Fishpopulation.updateCount(fishPop, dayFound["newFish"])
-
-# print(fishPop.count)
-# number = 0
-# next(day for day in fishPop.days if day["dayNumber"] == number)
-# Fishpopulation.updateCount(fishPop,2)
-# print(fishPop.count)
 
 
 
