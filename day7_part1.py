@@ -17,5 +17,6 @@ for i in range(0, highestPos+1):
         sum += fuelPerPos
     sumList.append(sum)
 
+print(sumList)
 print(min(sumList))
 
