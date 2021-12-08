@@ -12,7 +12,6 @@ highestPos = max(pos)
 middle = highestPos/2
 middle = int(middle)
 
-
 def fuelCostToTarget(target, position, count):
     steps = abs(position - target)
     fuelList = list(range(1, steps+1))
@@ -56,3 +55,4 @@ def searchMinFuel(pointer, listOfPos):
 
 result = searchMinFuel(middle, posCounter)
 print(result)
+
