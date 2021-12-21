@@ -1,4 +1,4 @@
-from collections import deque
+from collections import deque, Counter
 
 with open("day12/i_day12.txt") as f:
     text = f.read()
@@ -38,21 +38,32 @@ caves = CaveSystem()
 queue = deque()
 path = []
 
-
 def isVisitable(path, c):
+    #test the path to see if there are small caves allready visited twice
+    pathLowerCases = [el for el in path if el.islower()]
+    pathCounter = Counter(pathLowerCases)
+    testPath = [el for el, count in pathCounter.items() if count > 1]
+    smallCavesVisitedTwice = False
+    if len(testPath) > 0:
+        #there are allready small caves visited twice
+        smallCavesVisitedTwice = True
     visitable = True
-    smallCaveCounter = 0
-    if c in path and c.islower():
-        if smallCaveCounter == 0:
-            visitable = True
-            smallCaveCounter +=1
-        else:
-            visitable = False
-            return visitable
-    #check if the connection is a dead end
+    
+    #rules
+    #cannot visit if it's a return to start
+    if c == "start":
+        visitable = False
+        return visitable
+    #cannot visit if it's a dead end from a small cave and a small cave has allready been visited twice
     conn = caves.findCaveConnections(c)
     if len(conn) == 1:
         if conn[0].islower():
+            if smallCavesVisitedTwice == True:
+                visitable = False
+                return visitable
+    #cannot visit if it's a small cave that has allready been visited before and a small cave has allready been visited twice
+    if c in pathLowerCases:
+        if smallCavesVisitedTwice == True:
             visitable = False
             return visitable
     return visitable
