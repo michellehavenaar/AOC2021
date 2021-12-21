@@ -1,12 +1,10 @@
 from collections import deque
 
-with open("day12/i_day12test.txt") as f:
+with open("day12/i_day12.txt") as f:
     text = f.read()
 
-print(text)
 data = text.split("\n")
 caveMap = [line.split("-") for line in data]
-print(data)
 
 class CaveSystem: 
     def __init__(self):
@@ -28,9 +26,6 @@ class CaveSystem:
         for cave in self.listOfCaves:
             if cave.name == name:
                 return cave.links
-    
-
-
 
 
 class Cave:
@@ -38,14 +33,10 @@ class Cave:
         self.name = name
         self.links = [link]
 
-    # def update(self, link):
-    #     self.links.append(link)
-
 
 caves = CaveSystem()
 queue = deque()
 path = []
-
 
 
 def isVisitable(path, c):
@@ -55,7 +46,6 @@ def isVisitable(path, c):
         return visitable
     #check if the connection is a dead end
     conn = caves.findCaveConnections(c)
-    print(conn)
     if len(conn) == 1:
         if conn[0].islower():
             visitable = False
@@ -75,39 +65,30 @@ for line in caveMap:
         # create a new cave
         caves.addCave(line[1], line[0])
 
-print(caves.listOfCaves)
-for cave in caves.listOfCaves:
-    print(cave.name)
+#get the start cave and begin a path and add it to the queue
+path = ["start"]
+queue.append(path)
 
 
+# while there is something in the queue
+while len(queue) != 0:
+    # get the (next) path to explore from the queue
+    pathToCheck = queue.popleft()
+    # check the last visited cave in the path
+    lastVisited = pathToCheck[-1]
+    # find the last visited cave and get the connections
+    connections = caves.findCaveConnections(lastVisited)
+    # add each of the connections to the path and put it back into the queue if its not at an end
+    for c in connections:
+        #check if we can visit this connection
+        if isVisitable(pathToCheck, c): 
+            newPath = pathToCheck.copy()
+            newPath.append(c)
+            if c == "end":
+                caves.listOfPaths.append(newPath)
+            else:
+                queue.append(newPath)
 
-# #get the start cave and begin a path and add it to the queue
-# path = ["start"]
-# queue.append(path)
-
-# # while there is something in the queue
-# while len(queue) != 0:
-#     # get the (next) path to explore from the queue
-#     pathToCheck = queue.popleft()
-#     print("path:")
-#     print(pathToCheck)
-#     # check the last visited cave in the path
-#     lastVisited = pathToCheck[-1]
-#     # find the last visited cave and get the connections
-#     connections = caves.findCaveConnections(lastVisited)
-#     print("connections")
-#     print(connections)
-#     # add each of the connections to the path and put it back into the queue if its not at an end
-#     for c in connections:
-#         #check if we can visit this connection
-
-#         newPath = pathToCheck.copy()
-#         newPath.append(c)
-#         if c == "end":
-#             caves.listOfPaths.append(newPath)
-#         else:
-#             queue.append(newPath)
-
-# print(caves.listOfPaths)    
+print(len(caves.listOfPaths))  
 
 
