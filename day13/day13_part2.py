@@ -42,7 +42,7 @@ def fold(axis, value):
             mirror(co, value, ax)
 
 
-for instruction in listOfInstructions[:1]:
+for instruction in listOfInstructions:
     
     fold(instruction[0], instruction[1])
     #remove duplicates
@@ -52,9 +52,23 @@ for instruction in listOfInstructions[:1]:
             seen.append(co)
     listOfCoords = seen
 
-# print(listOfCoords)
-print(len(listOfCoords))
+#sort by x values to get the width of the grid
+sortedListX = sorted(listOfCoords, key = lambda k: [k[0],k[1]])
+# max width is the x coordinate of the last element
+maxWidth = sortedListX[-1][0] +1
 
+#sort by y values to get the length of the grid
+sortedListY = sorted(listOfCoords, key = lambda k: [k[1],k[0]])
+# max length is the y coordinate of the last element
+maxLength = sortedListY[-1][1] +1
 
+# make a grid
+grid = [ ["."] * maxWidth for _ in range(maxLength)]
 
+for co in listOfCoords:
+    x = co[0]
+    y = co[1]
+    grid[y][x] = "#"
 
+for row in grid:
+    print(row)
