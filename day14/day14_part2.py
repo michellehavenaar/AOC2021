@@ -1,6 +1,6 @@
 from collections import Counter
 
-with open("day14/i_day14test.txt") as f:
+with open("day14/i_day14.txt") as f:
     text = f.read()
 
 data = text.split("\n\n")
@@ -9,7 +9,6 @@ template = data[0]
 template = [t for t in template]
 
 listOfPairs = [template[i] + template[i+1] for i in range(len(template)-1)]
-print(listOfPairs)
 
 rules = data[1]
 rules = rules.split("\n")
@@ -19,7 +18,7 @@ rules = {r[0].strip(): r[1].strip() for r in rules}
 
 # make the initial count with the starting template
 templateCount = Counter(template)
-count = {k: v for k, v in templateCount.items()}
+countElements = {k: v for k, v in templateCount.items()}
 
 countPairs = {}
 
@@ -29,77 +28,39 @@ for pair in listOfPairs:
     else:
         countPairs[pair] = 1
 
-print(countPairs)
-
-
-# #find the value
-# insert = rules[pair]
-# if insert in count:
-#     count[insert] += 1
-# else:
-#     count[insert] = 1
-
-
-# print(count)
-
-
-
-
-
-# memo = {}
-
-# def polymer(pair, step):
-#     # count the steps in the tree and stop at 10
-#     if step == 10:
-#         return
-
-#     else:
-#         if pair in memo:
-#             insert = memo[pair][0]
-#             left = memo[pair][1]
-#             right = memo[pair][2]
-
-#             if insert in count:
-#                 count[insert] += 1
-#             else:
-#                 count[insert] = 1
-            
-#             # that is one layer of the tree counted, we update the step
-#             step +=1
-
-#             # and then do everything again for each new pair and so on
-#             polymer(left, step)
-#             polymer(right, step)
+step = 0
+while step < 40:
+    # make a temporary pair counter to count all the new pairs of this step
+    # at the end of the step write the temp over the original 
+    # so you can start every step with the pairs from the last step only
+    newCountPairs = {}
+    for k, v in list(countPairs.items()):
+        pair = k
+        count = v
+        # find the pair in the rules
+        insert = rules[pair]
+        # and add the insert to the element count, with the count being the amount of times that the parent pair appeared
+        if insert in countElements:
+            countElements[insert] += count
+        else: 
+            countElements[insert] = count
         
-#         else:
-#             # for each pair we check, we get the inserted value and add that to the count
-#             insert = rules[pair]
-#             if insert in count:
-#                 count[insert] += 1
-#             else:
-#                 count[insert] = 1
+        # make the new pairs
+        left = pair[0]+insert
+        right = insert + pair[1]
+        pairs = [left, right]
+        # and add them to a new pair counter, with the count being the amount of times that parent pair appeared
+        for p in pairs:
+            if p in newCountPairs:
+                newCountPairs[p] += count
+            else:
+                newCountPairs[p] = count
+    step +=1
+    countPairs = newCountPairs
 
-#             # that is one layer of the tree counted, we update the step
-#             step +=1
 
-#             # now we make new pairs with the inserted value
-#             left = pair[0]+insert
-#             right = insert + pair[1]
-            
-#             memo[pair] = [insert, left, right]
+maxValue = countElements[max(countElements, key = countElements.get)]
+minValue = countElements[min(countElements, key = countElements.get)]
 
-#             # and then do everything again for each new pair and so on
-#             polymer(left, step)
-#             polymer(right, step)
-
-# for pair in listOfPairs:
-#     step = 0
-#     polymer(pair, step)
-
-# print(count)
-
-# maxValue = count[max(count, key = count.get)]
-# minValue = count[min(count, key = count.get)]
-
-# answer = maxValue - minValue
-# print(answer)
+answer = maxValue - minValue
+print(answer)
