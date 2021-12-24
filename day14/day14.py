@@ -1,6 +1,6 @@
 from collections import Counter
 
-with open("day14/i_day14.txt") as f:
+with open("day14/i_day14test.txt") as f:
     text = f.read()
 
 data = text.split("\n\n")
